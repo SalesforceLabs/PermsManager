@@ -1,3 +1,8 @@
+<!-- 
+    FALSE POSITIVE - Client Insufficient ClickJacking Protection
+    Checkmarx doesn't consider aura components as part of application which is already protected from
+    clickjack attacks by using HTTP response headers like Content-Security-Policy and X-frame-options
+-->
 <aura:component controller="PermsManager">
     <aura:attribute name="listOfProfiles" type="String" default="System Administrator" />
     <aura:attribute name="listOfFields" type="String" default="Description" />
