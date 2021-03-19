@@ -5,12 +5,15 @@ public with sharing class PermsManager{
     public static String updateFLS(String objectName, String profileNames, String fieldNames, String permissions, Boolean isProfile){      
         if(!isAdmin()){
             throw new AuraHandledException('Only Admins are allowed to access this app');
-        }          
-        System.debug('@@@ CPU TIME @@@'+ Limits.getCpuTime());    
+        }
+        if(!isAdmin()){
+            return null;
+        }
+        
         Set<String> listOfProfiles = new Set<String>();
         for(String proRec :  profileNames.split('\n')){
             if(String.isNotBlank(proRec)){
-                listOfProfiles.add(proRec.toLowerCase());
+                listOfProfiles.add(proRec.toLowerCase().trim());
             }
         }
         Set<String> listOfFields = new Set<String>();
@@ -115,7 +118,7 @@ public with sharing class PermsManager{
         catch(Exception e){
             throw new AuraHandledException('Something went wrong! \n Maybe you giving edit access to read only field? \n Error Message: '+ e.getMessage());    
         }
-        System.debug('@@@ CPU TIME @@@'+ Limits.getCpuTime());
+        
         return succ;
     }
     
@@ -177,7 +180,7 @@ public with sharing class PermsManager{
         if(!(Profile.sObjectType.getDescribe().isQueryable() && isFieldsAccessible('Profile', fieldsToCheck1))){
             return false;
         }
-        Profile adminProfile = [Select Id from Profile where Name = 'System Administrator'];
+        Profile adminProfile = [Select Id from Profile where Name = 'System Administrator' AND PermissionsModifyAllData=true AND PermissionsCustomizeApplication=true AND PermissionsManageUsers=true];
         isAdmin = UserInfo.getProfileId() != adminProfile.Id ? false : true;                
         return isAdmin;
     }
@@ -198,6 +201,10 @@ public with sharing class PermsManager{
                 field = namespacePrefix+field;
                 if(lowerCaseFieldMap.containsKey(field.toLowerCase())){
                     if(!fieldMap.get(field).getDescribe().isAccessible()){
+                        /*
+                         *  FALSE POSITIVE 
+                         * DEBUG Statement only prints insufficient access to a specific field
+                         */ 
                         System.debug(LoggingLevel.ERROR,'Name of the User: '+UserInfo.getName() +'(' + Userinfo.getUserId() +') does not have access to the field: '+field+' of the object '+objectName);
                         return false;
                     }
