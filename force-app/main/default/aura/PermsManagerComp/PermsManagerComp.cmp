@@ -1,0 +1,47 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" controller="PermsManager">
+    <aura:attribute name="selectPanel" type="String" default="FLS" />
+    <aura:attribute name="timeTaken" type="Decimal" default="0" />
+    <aura:attribute name="retProfiles" type="String[]" />
+    <aura:attribute name="isExcep" type="Boolean" default="false" />
+    <aura:attribute name="isSucc" type="Boolean" default="false" />    
+    <aura:attribute name="isProfile" type="Boolean" default="true"/>
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+    <aura:attribute name="isAdmin" type="Boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="panelOptions" type="List" default="[
+                                                             {'label': 'FLS', 'value': 'FLS'},
+                                                             {'label': 'CRUDVM', 'value': 'CRUDVM'},
+                                                             {'label': 'Apex Class', 'value': 'Apex Class'},
+                                                             {'label': 'VF Page', 'value': 'VF Page'}
+                                                             ]"/>
+    <aura:attribute name="panelValue" type="String" default="FLS"/>
+    <div class="slds-scope slds-card">        
+        <aura:if isTrue="{!v.isAdmin}">
+            <aura:if isTrue="{!v.selectPanel == 'FLS'}">
+                <c:Perms_FLS isExcep="{!v.isExcep}" isSucc="{!v.isSucc}" loaded="{!v.loaded}" timeTaken="{!v.timeTaken}" retProfiles="{!v.retProfiles}" isProfile="{!v.isProfile}"/>
+            </aura:if>
+            <aura:set attribute="else">
+                <div class="slds-p-around_medium slds-text-heading_large slds-align_absolute-center slds-grid_vertical-align-center">
+                    Only Admins can access the app!
+                </div>
+            </aura:set>
+        </aura:if>      
+        <div>
+            <aura:if isTrue="{!v.isExcep}">
+                <div class="slds-p-left_medium slds-text-heading_large color-text-destructive" style="color: #c23934;">Oops! There are some errors!</div> <br/>
+                <div class="slds-text-heading_small slds-p-left_large">                      
+                    <aura:iteration items="{!v.retProfiles}" var="item">
+                        <div >{!item}</div>
+                    </aura:iteration>
+                </div>                
+            </aura:if>              
+        </div>
+        <br/><br/>
+        
+        <div class="exampleHolder">
+            <aura:if isTrue="{! v.loaded }">
+                <lightning:spinner alternativeText="Loading" />                
+            </aura:if>
+        </div>
+    </div>
+</aura:component>

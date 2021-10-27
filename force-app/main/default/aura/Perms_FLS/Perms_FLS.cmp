@@ -1,0 +1,78 @@
+<!-- 
+    FALSE POSITIVE - Client Insufficient ClickJacking Protection
+    Checkmarx doesn't consider aura components as part of application which is already protected from
+    clickjack attacks by using HTTP response headers like Content-Security-Policy and X-frame-options
+-->
+<aura:component controller="PermsManager">
+    <aura:attribute name="listOfProfiles" type="String" default="System Administrator" />
+    <aura:attribute name="listOfFields" type="String" default="Description" />
+    <aura:attribute name="objectName" type="String" default="Account" />
+    <aura:attribute name="value" type="List"  />
+    <aura:attribute name="isExcep" type="Boolean" default="false" />
+    <aura:attribute name="isProfile" type="Boolean" />
+    <aura:attribute name="isSucc" type="Boolean" default="false" />
+    <aura:attribute name="retProfiles" type="String[]" />
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+    <aura:attribute name="timeTaken" type="Decimal" default="0" />
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    <aura:attribute name="option" type="List" default="[
+                                                       {'label': 'Read', 'value': 'read'},
+                                                       {'label': 'Edit', 'value': 'edit'}
+                                                       ]" />
+    
+    <aura:attribute name="sandboxoption" type="List" default="[
+                                                              {'label': 'QASB1', 'value': 'QASB1'},
+                                                              {'label': 'DevPro88', 'value': 'DevPro88'}
+                                                              ]" />
+    <div class="slds-card slds-border_top slds-border_bottom slds-border_left slds-border_right">
+        <div class="slds-card__header">
+            <div class="slds-media__figure ">
+                
+            </div>
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <p class="slds-text-heading_small">
+                    <lightning:icon iconName="custom:custom83" size="small" alternativeText="FLS Permissions"
+                                    title="FLS Permissions" />
+                </p>
+                <span class="slds-text-heading_small slds-col" style="padding-left:4px;">
+                    FLS Permissions
+                </span>
+                <span class=" slds-col">
+                    
+                </span>
+            </div>
+        </div>
+        <hr style="border-top: 1px solid rgb(175, 174, 174);margin-bottom: 0px;margin-top: 0px;"/>
+        <div>
+            <div class="slds-grid ">
+                <span class=" slds-col slds-p-around_medium">
+                    <lightning:textarea aura:id="FLS_Assignment" label="{!(v.isProfile) ? 'List of Profiles' : 'List of Permission Sets'}" placeholder="type here..."
+                                        value="{!v.listOfProfiles}" required="true" />
+                </span>
+                <span class=" slds-col slds-p-around_medium">
+                    <lightning:input aura:id="FLS_Assignment" label="SObject" placeholder="type here..."
+                                     value="{!v.objectName}" required="true" />
+                </span>
+                <span class=" slds-col slds-p-around_medium">
+                    <lightning:textarea aura:id="FLS_Assignment" label="List of Fields" placeholder="type here..."
+                                        value="{!v.listOfFields}" required="true" />
+                </span>
+                <span class=" slds-col slds-p-around_medium">
+                    <lightning:checkboxGroup aura:id="FLS_Assignment" name="Checkbox Group" label="Field Permissions"
+                                             options="{! v.option }" value="{! v.value }" required="true" />
+                </span>
+                
+            </div>
+            <br />
+            <div class="slds-align_absolute-center">
+                <lightning:button variant="brand" label="Submit" title="Brand action"
+                                  onclick="{! c.handleClick }" />
+                <lightning:button variant="Neutral" label="Cancel" title="Brand action"
+                                  onclick="{! c.handleCancel }" />
+            </div>            
+        </div>
+    </div>
+    <aura:if isTrue="{!v.Spinner}">
+        <lightning:spinner aura:id="mySpinner"/>
+    </aura:if>
+</aura:component>
